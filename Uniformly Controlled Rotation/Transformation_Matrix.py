@@ -12,21 +12,20 @@ def bitwise_inner_product(bin1: str, bin2: str) -> int:
     max_length = max(len(bin1), len(bin2))
     bin1 = bin1.zfill(max_length)
     bin2 = bin2.zfill(max_length)
-    print("bin1", bin1)
-    print("bin2", bin2)
 
     result = 0
     for i,j in zip(bin1, bin2):
-        print(i, j)
         result += int(i) * int(j)
 
     return result
 
 def bigj(i: int, j: int) -> int:
+    """
+    >>> bigj(1,2)
+    0
+    """
     b = binary(i)
     g = grey_code(j)
-    print("b", b)
-    print("g", g)
     return bitwise_inner_product(b, g)
 
 def grey_code(num: int) -> str:
@@ -39,6 +38,9 @@ def grey_code(num: int) -> str:
     '11'
     >>> grey_code(3)
     '10'
+    >>> grey_code(11)
+    '1110'
+    >>> grey_code(12)
     """
     return bin(num ^ (num >> 1))[2:]
 
@@ -62,8 +64,22 @@ def get_theta(alpha, M):
 
 
 if __name__ == '__main__':
-    size = 3
-    alpha = np.array([np.pi/2, np.pi/2, np.pi/2])
+    size = 8
+    PHI = np.array([np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2])
     M = getM(size)
+    M2 = np.dot(M, M)
+    print(M2)
     print(M)
-    theta = get_theta(alpha, M)
+    theta = get_theta(PHI, M)
+    print(theta)
+
+    size = 4
+    PHI = np.array([np.pi/2, np.pi/2, np.pi/2, np.pi/2])
+    M = getM(size)
+    M2 = np.dot(M, M)
+    print(M2)
+    print(M)
+    theta = get_theta(PHI, M)
+    print(np.linalg.inv(M))
+    print(theta)
+
