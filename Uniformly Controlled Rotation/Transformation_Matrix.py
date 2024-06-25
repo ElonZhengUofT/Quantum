@@ -65,21 +65,15 @@ def get_theta(alpha, M):
 
 if __name__ == '__main__':
     size = 8
-    PHI = np.array([np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2])
+    PHI = np.array([(1.9106332362490184 + 3.9252311467094385e-17j),
+                    (2.2133936772164815 - 0.22777661338978505j),
+                    (2.8549588374993706 - 0.2906413301006183j),
+                    (3.464980246312816 - 0.20645507040497738j),
+                    (3.727278197046944 - 5.439603600208736e-17j),
+                    (3.464980246312816 + 0.2064550704049773j),
+                    (2.8549588374993706 + 0.2906413301006183j),
+                    (2.2133936772164815 + 0.2277766133897849j)], dtype=complex)
     M = getM(size)
-    M2 = np.dot(M, M)
-    print(M2)
-    print(M)
     theta = get_theta(PHI, M)
-    print(theta)
-
-    size = 4
-    PHI = np.array([np.pi/2, np.pi/2, np.pi/2, np.pi/2])
-    M = getM(size)
-    M2 = np.dot(M, M)
-    print(M2)
-    print(M)
-    theta = get_theta(PHI, M)
-    print(np.linalg.inv(M))
     print(theta)
 

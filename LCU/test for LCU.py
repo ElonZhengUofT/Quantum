@@ -10,9 +10,5 @@ def test(A):
     """
     test the block encoding for a banded and cyclic matrix by LCU
     """
-    test_A = A / np.linalg.norm(A)
-    theta_0 = 0
-    theta_1 = 0
-    prep = ps.prep(theta_0, theta_1)
-    select = ps.select()
-    Result = (np.kron(ps.identity, np.linalg.inv(prep))) @ select @ (np.kron(ps.identity, prep))
+    Result = ps.LCU(A)
+    return Result
