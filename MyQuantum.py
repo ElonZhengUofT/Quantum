@@ -1,5 +1,7 @@
 import numpy as np
 import numpy_Kron_overload as npk
+from qiskit import transpile
+from qiskit_aer import Aer
 
 # the order of operator in kronecker product follows the bit vector order
 #  where in a graph, the higher the bit is, the leftmost the operator is
@@ -9,6 +11,14 @@ sigma_x = np.array([[0, 1], [1, 0]], dtype=complex)
 sigma_y = np.array([[0, -1j], [1j, 0]], dtype=complex)
 sigma_z = np.array([[1, 0], [0, -1]], dtype=complex)
 identity = np.array([[1, 0], [0, 1]], dtype=complex)
+swap_0_2 = np.array([[1, 0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 1, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 1, 0],
+                 [0, 1, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 1, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0, 1]], dtype=complex)
 
 column_zero = np.array([[1], [0]], dtype=complex).reshape(-1, 1)
 column_one = np.array([[0], [1]], dtype=complex).reshape(-1, 1)
@@ -53,6 +63,7 @@ Hadamard = npk.Matrix(hadamard)
 Toffoli = npk.Matrix(toffoli)
 CNOT = npk.Matrix(cNOT)
 CNOT_2 = npk.Matrix(cNOT_2)
+SWAP_0_2 = npk.Matrix(swap_0_2)
 ################################################################################
 
 ################################################################################
@@ -171,5 +182,72 @@ def getM(size):
 
 def get_theta(alpha, M):
     return np.linalg.inv(M) @ alpha
+
+
+def O_Lambda(THETAs):
+    """
+    This function return the Operator Lambda
+    """
+    axis = [0, 1, 0]
+    Rearrange_THETAs = [THETAs[0], THETAs[7], THETAs[4], THETAs[3], THETAs[2],
+                        THETAs[5], THETAs[6], THETAs[1]]
+    R0 = rotation(Rearrange_THETAs[0], axis) ** I_8
+    R1 = rotation(Rearrange_THETAs[1], axis) ** I_8
+    R2 = rotation(Rearrange_THETAs[2], axis) ** I_8
+    R3 = rotation(Rearrange_THETAs[3], axis) ** I_8
+    R4 = rotation(Rearrange_THETAs[4], axis) ** I_8
+    R5 = rotation(Rearrange_THETAs[5], axis) ** I_8
+    R6 = rotation(Rearrange_THETAs[6], axis) ** I_8
+    R7 = rotation(Rearrange_THETAs[7], axis) ** I_8
+
+    CNOT_100 = (Sigma_x ** One_state + Identity ** Zero_state) ** I_4
+    CNOT_010 = (Sigma_x ** Identity ** One_state + Identity ** Identity ** Zero_state) ** Identity
+    CNOT_001 = (Sigma_x ** Identity ** Identity) ** One_state + Identity ** Identity ** Identity ** Zero_state
+
+    Result = CNOT_001 @ R7 @ CNOT_100 @ R6 @ CNOT_010 @ R5 @ CNOT_100 @ R4 @ CNOT_001 @ R3 @ CNOT_100 @ R2 @ CNOT_010 @ R1 @ CNOT_100 @ R0
+
+    return Result
+def get_Rotations(PHI):
+    THETA = get_theta(PHI, getM(8))
+
+
+    CNOT_001 = (Sigma_x ** Identity ** Identity) ** One_state + Identity ** Identity ** Identity ** Zero_state
+    CNOT_010 = (Sigma_x ** Identity ** One_state + Identity ** Identity ** Zero_state) ** Identity
+    CNOT_100 = (Sigma_x ** One_state + Identity ** Zero_state) ** I_4
+
+    R0 = Y_rotation(THETA[0]) ** I_8
+    R1 = Y_rotation(THETA[1]) ** I_8
+    R2 = Y_rotation(THETA[2]) ** I_8
+    R3 = Y_rotation(THETA[3]) ** I_8
+    R4 = Y_rotation(THETA[4]) ** I_8
+    R5 = Y_rotation(THETA[5]) ** I_8
+    R6 = Y_rotation(THETA[6]) ** I_8
+    R7 = Y_rotation(THETA[7]) ** I_8
+
+
+    R = CNOT_100 @ R7 @ CNOT_001 @ R6 @ CNOT_010 @ R5 @ CNOT_001 @ R4 @ CNOT_100 @ R3 @ CNOT_001 @ R2 @ CNOT_010 @ R1 @ CNOT_001 @ R0
+
+    return R
+
+def get_statevector(qc):
+    backend = Aer.get_backend('statevector_simulator')
+    tqc = transpile(qc, backend)
+    result = backend.run(tqc).result()
+    statevector = result.get_statevector(tqc)
+    return statevector
+
+# 从状态向量构建密度矩阵
+def statevector_to_density_matrix(statevector):
+    return np.outer(statevector, statevector.conj())
+
+# 从密度矩阵获取量子电路的矩阵表示
+def density_matrix_to_matrix(density_matrix):
+    num_qubits = int(np.log2(density_matrix.shape[0]))
+    matrix = np.zeros((2**num_qubits, 2**num_qubits), dtype=complex)
+    for i in range(2**num_qubits):
+        for j in range(2**num_qubits):
+            matrix[i, j] = density_matrix[i, j]
+    return matrix
+
 
 ################################################################################

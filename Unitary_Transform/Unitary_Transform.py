@@ -16,14 +16,7 @@ def QFT():
     E = Identity ** (
                 Phase_shift(np.pi / 2) ** One_state + Identity ** Zero_state)
     F = Identity ** Identity ** Hadamard
-    SWAP = np.array([[1, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 1, 0, 0, 0],
-                     [0, 0, 1, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 1, 0],
-                     [0, 1, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 1, 0, 0],
-                     [0, 0, 0, 1, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 1]], dtype=complex)
+    SWAP = SWAP_0_2
     QFT = SWAP @ F @ E @ D @ C @ B @ H
 
 #     H = Identity ** Identity ** Hadamard
@@ -138,7 +131,30 @@ if __name__ == '__main__':
                   [1, 0, 0, 0, 1, 2, 1, 2],
                   [2, 1, 0, 0, 0, 1, 2, 1]], dtype=complex)
     Result = UT(A)
-    print("A", np.round(A / np.linalg.norm(A), 3).real)
-    print("Result", round(Result, 3).real)
     Validation = Result - A / np.linalg.norm(A)
+    print(round(Validation, 3).real)
+
+    B = np.array([[1, 2, 3, 0, 0, 0, 3, 2],
+                  [2, 1, 2, 3, 0, 0, 0, 3],
+                  [3, 2, 1, 2, 3, 0, 0, 0],
+                  [0, 3, 2, 1, 2, 3, 0, 0],
+                  [0, 0, 3, 2, 1, 2, 3, 0],
+                  [0, 0, 0, 3, 2, 1, 2, 3],
+                  [3, 0, 0, 0, 3, 2, 1, 2],
+                  [2, 3, 0, 0, 0, 3, 2, 1]], dtype=complex)
+    Result = UT(B)
+    Validation = Result - B / np.linalg.norm(B)
+    print(round(Validation, 3).real)
+
+    C = np.array([[1, 2, 3, 4, 0, 4, 3, 2],
+                    [2, 1, 2, 3, 4, 0, 4, 3],
+                    [3, 2, 1, 2, 3, 4, 0, 4],
+                    [4, 3, 2, 1, 2, 3, 4, 0],
+                    [0, 4, 3, 2, 1, 2, 3, 4],
+                    [4, 0, 4, 3, 2, 1, 2, 3],
+                    [3, 4, 0, 4, 3, 2, 1, 2],
+                    [2, 3, 4, 0, 4, 3, 2, 1]], dtype=complex)
+
+    Result = UT(C)
+    Validation = Result - C / np.linalg.norm(C)
     print(round(Validation, 3).real)

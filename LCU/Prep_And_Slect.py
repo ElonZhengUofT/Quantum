@@ -59,6 +59,7 @@ def select():
     seventh = minus_one
     diag = [zeroth, first, second, third, fourth, fifth, sixth, seventh]
 
+
     for i in range(0, 64, 8):
         Mat[i:i + 8, i:i + 8] = diag[i // 8]
 
@@ -97,6 +98,8 @@ if __name__ == "__main__":
 
     Result, coef_sum = LCU(A)
     validation = Result  - A / coef_sum
+    print(np.round(Result, 3).real)
+    print(np.round(A / coef_sum, 3).real)
     print(np.round(validation, 3).real)
 
     B = np.array(   [[1, 2, 3,0,0,0,3,2],
@@ -110,4 +113,5 @@ if __name__ == "__main__":
     Result, coef_sum = LCU(B)
     validation = Result  - B / coef_sum
     print(np.round(validation, 3).real)
+
 
