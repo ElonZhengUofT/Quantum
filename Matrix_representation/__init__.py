@@ -12,6 +12,7 @@ if __name__ == "__main__":
     dy = I_4 ** D
     TwoD_Laplace = dx + dy
 
+
     print(dx.real)
     print(dy.real)
     print(TwoD_Laplace.real)
