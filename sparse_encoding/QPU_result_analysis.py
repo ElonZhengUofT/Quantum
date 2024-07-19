@@ -8,3 +8,4 @@ service = QiskitRuntimeService(
 job = service.job('ctc0jyky6ybg008g5wn0')
 job_result = job.result()
 counts = job_result.metadata
+print(counts)

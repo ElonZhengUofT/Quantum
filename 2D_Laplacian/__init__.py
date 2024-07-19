@@ -1,6 +1,7 @@
 from MyQuantum import *
 import numpy as np
 import numpy_Kron_overload as npk
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     D = npk.Matrix(np.array([[2, -1, 0, -1],
@@ -16,8 +17,11 @@ if __name__ == "__main__":
     print(dx.real)
     print(dy.real)
     print(TwoD_Laplace.real)
+    plt.imshow(TwoD_Laplace.real)
+    plt.colorbar()
+    # Check the Pj kron I + I kron Pj, try to implement this to implement the 2D Laplace operator.
 
-    o = np.exp(np.pi * 1j / 8)
+    o = np.exp(np.pi * 1j / 4)
 
     Fourier_16 = npk.Matrix(np.array([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1],
                                       [1, o ** 1, o ** 2, o ** 3, o ** 4, o ** 5, o ** 6, o ** 7, o ** 8, o ** 9, o ** 10, o ** 11, o ** 12, o ** 13, o ** 14, o ** 15],
